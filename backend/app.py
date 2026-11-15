@@ -4,7 +4,7 @@ import time
 import json
 import numpy as np
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
@@ -229,7 +229,7 @@ class RecardEngine:
                 "flagged_suspicious": flagged_count,
                 "clean_transactions": len(records) - flagged_count,
                 "average_risk_score": round(avg_risk, 3),
-                "evaluation_timestamp": datetime.utcnow().isoformat() + "Z",
+                "evaluation_timestamp": datetime.now(timezone.utc).isoformat(),
                 "models_applied": ["K-Nearest Neighbors", "Random Forest (Balanced)", "XGBoost Classifier", "LSTM Sequential Behavioral Profiler"]
             },
             "transactions": results
@@ -256,7 +256,7 @@ def ping():
     return jsonify({
         "status": "healthy",
         "service": "RECARD Python Analytics Engine",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "latency_ms": latency_ms,
         "models_loaded": ["KNN", "RandomForest", "XGBoost", "RNN_LSTM"],
         "memory_status": "optimal"
