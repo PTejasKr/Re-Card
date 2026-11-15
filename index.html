@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
   
+  <link rel="icon" type="image/svg+xml" href="static/logo.svg">
   <link rel="stylesheet" href="static/style.css">
   <!-- Chart.js for smooth real-time ping visualizer -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -23,10 +24,12 @@
   <header class="site-header">
     <div class="container nav-row">
       <a href="#hero" class="brand-anchor">
-        <div class="brand-mark">RC</div>
+        <div class="brand-logo-wrap">
+          <img src="static/logo.svg" alt="RECARD Logo" class="brand-svg-logo">
+        </div>
         <div class="brand-text-block">
           <span class="brand-name">RECARD</span>
-          <span class="brand-tag">Treasury & Fraud Defense</span>
+          <span class="brand-tag">Treasury &amp; Fraud Defense</span>
         </div>
       </a>
 
@@ -329,7 +332,10 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <h4>RECARD Fraud Intelligence</h4>
+          <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.75rem;">
+            <img src="static/logo.svg" alt="RECARD Logo" style="width: 44px; height: 44px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">
+            <h4 style="margin-bottom: 0;">RECARD Fraud Intelligence</h4>
+          </div>
           <p>
             An autonomous multi-model machine learning architecture combining spatial neighborhood clustering, 
             gradient decision trees, and sequence temporal sliding windows for corporate treasury risk control.
