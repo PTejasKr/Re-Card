@@ -1,0 +1,25 @@
+exports.handler = async (event, context) => {
+  const sampleCsv = `Date,Description,Amount,Balance
+2026-11-01 09:15,WHOLE FOODS MKT,84.20,4520.00
+2026-11-02 12:40,UBER EATS TRIP,26.50,4493.50
+2026-11-03 14:10,AMAZON RETAIL PURCHASE,142.15,4351.35
+2026-11-03 18:25,SHELL GAS STATION,48.00,4303.35
+2026-11-04 02:45,UNKNOWN OVERSEAS CRYPTO-EXCH,1450.00,2853.35
+2026-11-04 02:49,OVERSEAS WIRE CASINO 888,980.00,1873.35
+2026-11-05 10:30,STARBUCKS COFFEE #492,6.85,1866.50
+2026-11-06 13:00,SALARY DIRECT DEPOSIT,3200.00,5066.50
+2026-11-07 19:40,NETFLIX MONTHLY SUB,19.99,5046.51
+2026-11-08 03:15,ATM CASH WITHDRAWAL #9901,800.00,4246.51
+2026-11-08 03:18,ATM CASH WITHDRAWAL #9901,800.00,3446.51
+2026-11-09 11:20,TARGET STORE #124,54.10,3392.41`;
+
+  return {
+    statusCode: 200,
+    headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": "attachment; filename=\"recard_sample_bank_statement.csv\"",
+      "Access-Control-Allow-Origin": "*"
+    },
+    body: sampleCsv
+  };
+};
