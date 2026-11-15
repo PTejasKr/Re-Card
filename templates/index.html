@@ -3,259 +3,375 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RECARD — Behavioral Fraud Intelligence</title>
+  <title>RECARD — Autonomous Treasury Fraud Intelligence</title>
+  
+  <!-- Fonts: Instrument Serif + Plus Jakarta Sans + JetBrains Mono (Neo-Brutalist & Minimalist) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css">
-  <!-- Chart.js for Graphic Real-Time Ping Visuals -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static/style.css">
+  <!-- Chart.js for smooth real-time ping visualizer -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
-<body class="editorial-paper">
-  <!-- Crayon SVG filters for textured borders & sketch strokes -->
-  <svg class="crayon-defs" width="0" height="0">
-    <filter id="crayon-roughness">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" xChannelSelector="R" yChannelSelector="G" />
-    </filter>
-    <filter id="pencil-stroke">
-      <feTurbulence type="turbulence" baseFrequency="0.08" numOctaves="2" result="turb" />
-      <feDisplacementMap in="SourceGraphic" in2="turb" scale="2" />
-    </filter>
-  </svg>
-
+<body>
+  <!-- Editorial Paper Grain Texture -->
   <div class="grain-overlay"></div>
 
-  <!-- Header -->
-  <header class="editorial-header">
-    <div class="header-inner">
-      <div class="brand-group">
-        <div class="brand-badge crayon-border-sm">RECARD / ML</div>
-        <div class="brand-title">
-          <h1>Behavioral Fraud Intelligence</h1>
-          <span class="brand-sub">KNN · Random Forest · XGBoost · LSTM Sequence Model</span>
-        </div>
+  <!-- Announcement Ticker -->
+  <aside class="announcement-bar">
+    <div class="inner">
+      <div class="ticker-item">
+        <span class="ticker-badge">RECARD v2.4</span>
+        <span>Multi-Model Fraud Intelligence · KNN + Random Forest + XGBoost + Sequential Behavioral Profiling</span>
       </div>
-      <div class="server-telemetry-badge crayon-border-sm">
-        <div class="pulse-indicator" id="pulse-dot"></div>
-        <div class="telemetry-info">
-          <span class="telemetry-label">PYTHON BACKEND</span>
-          <span class="telemetry-val" id="server-status">CONNECTING...</span>
+      <div class="ticker-item" style="font-style: italic;">
+        <span>Autonomous Bank Statement Audit Engine</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-row">
+      <a href="#hero" class="brand-anchor">
+        <div class="brand-mark">RC</div>
+        <div class="brand-text-block">
+          <span class="brand-name">RECARD</span>
+          <span class="brand-tag">Treasury & Fraud Defense</span>
         </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#hero" class="nav-link">Overview</a>
+        <a href="#audit" class="nav-link">Audit Statement</a>
+        <a href="#models" class="nav-link">Model Architecture</a>
+        <a href="#results-section" class="nav-link" id="nav-results-link">Audit Trail</a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Live Real-Time Telemetry Pill -->
+        <div class="live-telemetry-pill">
+          <div class="pulse-indicator" id="pulse-dot"></div>
+          <div class="telemetry-meta">
+            <span class="meta-label">Backend Telemetry</span>
+            <span class="meta-val" id="server-status">Connecting...</span>
+          </div>
+        </div>
+
+        <a href="#audit" class="btn-neo btn-primary" style="padding: 0.5rem 1rem; font-size: 0.84rem;">
+          Ingest Statement
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="main-wrapper">
-    
-    <!-- Hero / Headline Section -->
-    <section class="hero-section">
-      <div class="hero-editorial">
-        <span class="handwritten-tag crayon-pencil">Audit & Classify</span>
-        <h2 class="serif-title">Bank Statement Multi-Model Verification</h2>
-        <p class="editorial-lead">
-          Upload customer bank account statements in structured <code class="pencil-code">.CSV</code> or <code class="pencil-code">.XLSX</code> format. 
-          The multi-model pipeline analyzes spending spikes, sequence bursts, and statistical outlier distances to identify fraudulent activity.
-        </p>
-      </div>
-
-      <!-- Real-Time Graphical Ping Monitor (Visualizer) -->
-      <div class="telemetry-card crayon-box">
-        <div class="card-header">
-          <div class="badge-title">
-            <span class="crayon-scribble-dot"></span>
-            <h3>Real-Time Python Backend Telemetry</h3>
-          </div>
-          <div class="ping-stats">
-            <span class="stat-pill"><strong id="live-latency">--</strong> ms latency</span>
-            <span class="stat-pill" id="live-clock">--:--:--</span>
-          </div>
-        </div>
-        <div class="chart-container">
-          <canvas id="pingChart" height="95"></canvas>
-        </div>
-        <div class="telemetry-footer">
-          <span class="micro-note">Streaming continuous GET pings to <code class="pencil-code">/api/ping</code> at 1.8s intervals.</span>
-          <span class="micro-status" id="ping-count-badge">0 pings recorded</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Upload & Bank Statement Input Zone -->
-    <section class="upload-section">
-      <div class="grid-layout">
+  <main>
+    <!-- Hero Section with Interactive Dashboard & Real-Time Graph -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-grid">
         
-        <!-- Left: Upload Card -->
-        <div class="crayon-card">
-          <div class="card-title-row">
-            <span class="step-num crayon-circle">01</span>
-            <div>
-              <h3>Upload Bank Statement</h3>
-              <p class="card-desc">Accepts CSV or Excel sheets with Date, Description, Amount, and Balance.</p>
+        <!-- Left: Copy & Value Proposition -->
+        <div class="hero-copy-block">
+          <div class="hero-tag">
+            <span>● Live Inference Pipeline</span>
+          </div>
+
+          <h1 class="hero-title">
+            Treasury Fraud Defense, <em>deterministic</em> by design.
+          </h1>
+
+          <p class="hero-subtitle">
+            Ingest customer bank account statements and run instantaneous multi-model behavioral inference across 
+            <strong>K-Nearest Neighbors</strong>, <strong>Random Forest</strong>, <strong>XGBoost</strong>, and 
+            <strong>Sequential Temporal Profiling</strong> to intercept velocity bursts and anomalous withdrawals.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#audit" class="btn-neo btn-primary">
+              <span>Start Statement Audit</span>
+              <span style="font-family: var(--font-mono);">→</span>
+            </a>
+            <a href="sample_statements/statement_sample.csv" download class="btn-neo btn-accent" id="hero-sample-download">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Download Demo CSV</span>
+            </a>
+          </div>
+
+          <div class="hero-trust-row">
+            <div class="hero-trust-item">
+              <span style="color: var(--emerald-safe); font-weight: 800;">✓</span>
+              <span>CSV & XLSX Standardized</span>
+            </div>
+            <div class="hero-trust-item">
+              <span style="color: var(--emerald-safe); font-weight: 800;">✓</span>
+              <span>PR-AUC Calibrated</span>
+            </div>
+            <div class="hero-trust-item">
+              <span style="color: var(--emerald-safe); font-weight: 800;">✓</span>
+              <span>Zero-Jitter Telemetry</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Dashboard Visualizer with Real-Time Ping Chart -->
+        <div class="hero-dashboard-card">
+          <div class="dashboard-card-top">
+            <div class="top-left-status">
+              <span class="status-dot"></span>
+              <h3>Active Backend Gateway</h3>
+            </div>
+            <span class="ping-pill" id="hero-ping-pill">0.0 ms Latency</span>
+          </div>
+
+          <!-- Real-Time Ping Visualizer Graph -->
+          <div class="ping-canvas-container">
+            <div class="canvas-meta-bar">
+              <span>REAL-TIME PING STREAM (ms)</span>
+              <span id="ping-clock">00:00:00 UTC</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="pingChart"></canvas>
             </div>
           </div>
 
-          <!-- Drop Area -->
-          <div class="drop-zone crayon-border" id="drop-zone">
-            <input type="file" id="file-input" accept=".csv, .xlsx, .xls" hidden>
-            <div class="drop-content">
-              <div class="crayon-icon-upload">
-                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Key Metrics Row -->
+          <div class="dashboard-stat-row">
+            <div class="stat-box">
+              <span class="label">Inference Ensembles</span>
+              <span class="value">4 Models</span>
+            </div>
+            <div class="stat-box">
+              <span class="label">Sampling Window</span>
+              <span class="value">5 Tx Burst</span>
+            </div>
+            <div class="stat-box">
+              <span class="label">Stream Health</span>
+              <span class="value" style="color: var(--emerald-safe);" id="stream-health-text">Optimal</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Bank Statement Ingestion Section -->
+    <section class="statement-section" id="audit">
+      <div class="container">
+        
+        <div class="section-head">
+          <span class="section-tag">Direct Ingestion</span>
+          <h2 class="section-title">Upload Bank Statement for <em>Audit</em></h2>
+          <p class="section-desc">
+            Provide monthly customer transactions in tabular format. The engine cross-references velocity, balance drop ratios, and keyword signatures.
+          </p>
+        </div>
+
+        <div class="statement-grid">
+          
+          <!-- Ingestion Card -->
+          <div class="neo-card">
+            <div class="card-step-header">
+              <span class="step-badge">STEP 01</span>
+              <div>
+                <h3>Bank Statement File Dropzone</h3>
+                <p style="font-size: 0.82rem; color: var(--ink-500); margin-top: 0.2rem;">Accepts structured .csv or .xlsx exports.</p>
+              </div>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="neo-drop-zone" id="drop-zone">
+              <input type="file" id="file-input" accept=".csv, .xlsx, .xls" hidden>
+              
+              <div class="drop-icon">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
                   <path d="M12 12v9"/>
                   <path d="m16 16-4-4-4 4"/>
                 </svg>
               </div>
-              <p class="drop-text">Drag & drop your bank statement here, or <button type="button" class="btn-text-crayon" id="browse-btn">browse files</button></p>
-              <span class="drop-hint">Requires columns: <code>Date</code>, <code>Description/Merchant</code>, <code>Amount</code></span>
+
+              <div class="drop-primary-text">
+                Drag & drop bank statement, or <button type="button" class="drop-browse-btn" id="browse-btn">browse file</button>
+              </div>
+              <div class="drop-secondary-text">
+                Must contain columns: Date, Description, Amount, Balance
+              </div>
+
+              <div class="selected-file-pill hidden" id="file-pill">
+                <span class="name" id="file-name-text">statement.csv</span>
+                <button type="button" class="btn-file-cancel" id="remove-file-btn" title="Remove">&times;</button>
+              </div>
             </div>
-            <div class="selected-file-pill hidden" id="file-pill">
-              <span class="file-name" id="file-name-text">statement.csv</span>
-              <button type="button" class="btn-remove" id="remove-file-btn" title="Remove file">&times;</button>
+
+            <!-- Action Controls -->
+            <div class="card-action-bar">
+              <button id="analyze-btn" class="btn-neo btn-primary" disabled>
+                <span>Run Forensic Audit</span>
+                <span style="font-family: var(--font-mono);">→</span>
+              </button>
+
+              <a href="sample_statements/statement_sample.csv" download class="btn-sample-download">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download Sample Statement (.csv)</span>
+              </a>
             </div>
+
+            <div id="upload-status" class="status-callout hidden"></div>
           </div>
 
-          <!-- Actions & Sample Download -->
-          <div class="action-bar">
-            <button id="analyze-btn" class="btn-primary-crayon" disabled>
-              <span class="btn-text">Execute Fraud Audit</span>
-              <span class="btn-arrow">→</span>
-            </button>
-            <a href="/api/sample-statement" class="btn-secondary-crayon" download>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download Sample CSV
-            </a>
-          </div>
+          <!-- Schema Requirements & Model Breakdown -->
+          <div class="neo-card tinted" id="models">
+            <div class="card-step-header">
+              <span class="step-badge">STEP 02</span>
+              <div>
+                <h3>Inference Specification</h3>
+                <p style="font-size: 0.82rem; color: var(--ink-500); margin-top: 0.2rem;">Model weighting and risk boundary checks.</p>
+              </div>
+            </div>
 
-          <div id="upload-status" class="status-box hidden"></div>
-        </div>
+            <div class="spec-list">
+              <div class="spec-item">
+                <div class="spec-check">✓</div>
+                <div>
+                  <strong>Currency & Amount Normalization</strong>
+                  <p>Handles currency symbols ($ € £), debit negation, and scientific floats.</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-check">✓</div>
+                <div>
+                  <strong>Sliding Window Burst Profiling</strong>
+                  <p>Detects consecutive midnight transactions and cashout spikes (LSTM style).</p>
+                </div>
+              </div>
+              <div class="spec-item">
+                <div class="spec-check">✓</div>
+                <div>
+                  <strong>Ensemble Calibration Matrix</strong>
+                  <p>Balances precision and recall across extreme imbalance distributions.</p>
+                </div>
+              </div>
+            </div>
 
-        <!-- Right: Schema Spec & Model Overview -->
-        <div class="crayon-card soft-card">
-          <div class="card-title-row">
-            <span class="step-num crayon-circle">02</span>
+            <div style="border-top: var(--border-hairline); margin: 0.5rem 0;"></div>
+
             <div>
-              <h3>Statement Schema & Pipelines</h3>
-              <p class="card-desc">How RECARD evaluates each transaction row.</p>
-            </div>
-          </div>
-
-          <div class="schema-checklist">
-            <div class="schema-item">
-              <span class="crayon-check">✓</span>
-              <div>
-                <strong>Amount & Currency Format</strong>
-                <p>Standardizes string floats, symbols ($ € £), and debit amounts.</p>
+              <span style="font-size: 0.72rem; font-family: var(--font-mono); font-weight: 700; text-transform: uppercase; color: var(--ink-400);">Active Model Weightings</span>
+              <div class="model-tags-matrix">
+                <div class="model-badge"><strong>KNN (20%)</strong>: Outlier Distance</div>
+                <div class="model-badge"><strong>RF (35%)</strong>: Tree Entropy</div>
+                <div class="model-badge"><strong>XGB (30%)</strong>: Gradient Scale</div>
+                <div class="model-badge"><strong>LSTM (15%)</strong>: Velocity Burst</div>
               </div>
             </div>
-            <div class="schema-item">
-              <span class="crayon-check">✓</span>
-              <div>
-                <strong>Chronological Sequence Extraction</strong>
-                <p>Evaluates rapid temporal bursts (e.g. repeated withdrawals in midnight windows).</p>
-              </div>
-            </div>
-            <div class="schema-item">
-              <span class="crayon-check">✓</span>
-              <div>
-                <strong>Ensemble Weight Matrix</strong>
-                <p>Combines KNN distance, Random Forest entropy, and XGBoost gradient probabilities.</p>
-              </div>
-            </div>
+
           </div>
 
-          <div class="crayon-divider"></div>
-
-          <div class="models-applied-grid">
-            <div class="mini-model-pill">
-              <span class="dot-knn"></span>
-              <span><strong>KNN</strong> (Outliers)</span>
-            </div>
-            <div class="mini-model-pill">
-              <span class="dot-rf"></span>
-              <span><strong>Random Forest</strong> (Balanced)</span>
-            </div>
-            <div class="mini-model-pill">
-              <span class="dot-xgb"></span>
-              <span><strong>XGBoost</strong> (Weighted)</span>
-            </div>
-            <div class="mini-model-pill">
-              <span class="dot-lstm"></span>
-              <span><strong>LSTM</strong> (Sequence)</span>
-            </div>
-          </div>
         </div>
 
       </div>
     </section>
 
-    <!-- Results Section (Dynamic) -->
-    <section id="results-section" class="results-section hidden">
-      <div class="results-header">
-        <h2 class="serif-title">Evaluation Summary & Flagged Rows</h2>
-        <span class="handwritten-tag crayon-pencil" id="summary-meta">Analysis Complete</span>
-      </div>
+    <!-- Dynamic Results & Forensic Audit Section -->
+    <section class="results-section hidden" id="results-section">
+      <div class="container">
+        
+        <div class="section-head" style="text-align: left; margin-bottom: 2rem;">
+          <span class="section-tag" style="background: var(--bg-card);">Audit Verdict</span>
+          <h2 class="section-title">Audit Results & <em>Flagged Risks</em></h2>
+          <p class="section-desc" id="summary-meta-desc">Comprehensive row-by-row transaction risk scoring.</p>
+        </div>
 
-      <!-- Metrics Row -->
-      <div class="metrics-grid">
-        <div class="metric-card crayon-box">
-          <span class="metric-label">Total Transactions</span>
-          <span class="metric-number" id="metric-total">0</span>
-        </div>
-        <div class="metric-card crayon-box alert-card">
-          <span class="metric-label">Flagged Suspicious</span>
-          <span class="metric-number" id="metric-flagged">0</span>
-        </div>
-        <div class="metric-card crayon-box clean-card">
-          <span class="metric-label">Clean Transactions</span>
-          <span class="metric-number" id="metric-clean">0</span>
-        </div>
-        <div class="metric-card crayon-box">
-          <span class="metric-label">Average Risk Index</span>
-          <span class="metric-number" id="metric-avg-risk">0.00</span>
-        </div>
-      </div>
-
-      <!-- Transactions Table View -->
-      <div class="table-container crayon-card">
-        <div class="table-top-bar">
-          <h3>Parsed Transactions Audit Trail</h3>
-          <div class="filter-toggles">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="fraud">Flagged Only</button>
-            <button class="filter-btn" data-filter="clean">Verified Clean</button>
+        <!-- Metrics Cards -->
+        <div class="metrics-summary-grid">
+          <div class="metric-card">
+            <span class="metric-lbl">Total Processed</span>
+            <span class="metric-val" id="metric-total">0</span>
+          </div>
+          <div class="metric-card alert">
+            <span class="metric-lbl">Flagged Suspicious</span>
+            <span class="metric-val" id="metric-flagged">0</span>
+          </div>
+          <div class="metric-card safe">
+            <span class="metric-lbl">Clean Transactions</span>
+            <span class="metric-val" id="metric-clean">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-lbl">Average Risk Index</span>
+            <span class="metric-val" id="metric-avg-risk">0.00</span>
           </div>
         </div>
 
-        <div class="table-scroll">
-          <table class="editorial-table" id="transactions-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Timestamp</th>
-                <th>Merchant / Description</th>
-                <th>Amount</th>
-                <th>Balance</th>
-                <th>Model Breakdown</th>
-                <th>Composite Risk</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="table-body">
-              <!-- Injected by JavaScript -->
-            </tbody>
-          </table>
+        <!-- Transactions Audit Table -->
+        <div class="transactions-table-card">
+          <div class="table-action-header">
+            <h3>Forensic Transaction Log</h3>
+            <div class="filter-button-group">
+              <button class="btn-filter active" data-filter="all">All Records</button>
+              <button class="btn-filter" data-filter="fraud">Flagged High-Risk</button>
+              <button class="btn-filter" data-filter="clean">Verified Legitimate</button>
+            </div>
+          </div>
+
+          <div class="table-scroll-wrapper">
+            <table class="neo-table" id="transactions-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Timestamp</th>
+                  <th>Particulars / Merchant</th>
+                  <th>Amount</th>
+                  <th>Balance</th>
+                  <th>Model Breakdown</th>
+                  <th>Composite Risk</th>
+                  <th>Verdict</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
         </div>
+
       </div>
     </section>
 
   </main>
 
-  <footer class="editorial-footer">
-    <p>RECARD Fraud Detection System — Python Analytical Engine with Soft Editorial Minimalist Interface.</p>
+  <!-- Site Footer with Explicit Project Attribution -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>RECARD Fraud Intelligence</h4>
+          <p>
+            An autonomous multi-model machine learning architecture combining spatial neighborhood clustering, 
+            gradient decision trees, and sequence temporal sliding windows for corporate treasury risk control.
+          </p>
+        </div>
+
+        <div class="attribution-box">
+          <div class="attribution-title">Research & Development Attribution</div>
+          <div class="attribution-text">
+            Based off of Recard by Punyap Tejas Kumar and Shaswat Sahu
+          </div>
+          <div style="font-size: 0.75rem; color: #889690; margin-top: 0.4rem; font-family: var(--font-mono);">
+            Repository: PTejasKr/Re-Card · MIT License
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 RECARD Behavioral Profiling System.</span>
+        <span>Neo-Brutalist & Minimalist Design Architecture inspired by 21st.dev</span>
+      </div>
+    </div>
   </footer>
 
-  <script src="/static/app.js"></script>
+  <script src="static/app.js"></script>
 </body>
 </html>
