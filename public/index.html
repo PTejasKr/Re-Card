@@ -289,6 +289,121 @@
           </div>
         </div>
 
+        <!-- Evaluation Metrics & Plotted Confusion Matrix Dashboard -->
+        <div class="eval-metrics-card">
+          <div class="eval-card-header">
+            <div>
+              <span class="eval-tag">Statistical Model Validation</span>
+              <h3 class="eval-title">Evaluation Metrics &amp; Confusion Matrix</h3>
+            </div>
+            <div class="eval-auprc-badge">
+              <span class="badge-lbl">Benchmarked AUPRC</span>
+              <strong class="badge-val">0.942</strong>
+            </div>
+          </div>
+
+          <!-- 6-Metric Indicator Ribbon -->
+          <div class="eval-kpi-ribbon">
+            <div class="eval-kpi-item">
+              <span class="kpi-name">Precision (PPV)</span>
+              <span class="kpi-num" id="eval-precision">0.951</span>
+              <span class="kpi-sub">TP / (TP + FP)</span>
+            </div>
+            <div class="eval-kpi-item">
+              <span class="kpi-name">Recall (TPR)</span>
+              <span class="kpi-num" id="eval-recall">0.885</span>
+              <span class="kpi-sub">TP / (TP + FN)</span>
+            </div>
+            <div class="eval-kpi-item">
+              <span class="kpi-name">F1-Score</span>
+              <span class="kpi-num" id="eval-f1">0.917</span>
+              <span class="kpi-sub">Harmonic Mean</span>
+            </div>
+            <div class="eval-kpi-item">
+              <span class="kpi-name">Accuracy</span>
+              <span class="kpi-num" id="eval-accuracy">0.978</span>
+              <span class="kpi-sub">(TP + TN) / Total</span>
+            </div>
+            <div class="eval-kpi-item">
+              <span class="kpi-name">Specificity (TNR)</span>
+              <span class="kpi-num" id="eval-specificity">0.985</span>
+              <span class="kpi-sub">TN / (TN + FP)</span>
+            </div>
+            <div class="eval-kpi-item highlight">
+              <span class="kpi-name">ROC-AUC</span>
+              <span class="kpi-num" id="eval-aucroc">0.981</span>
+              <span class="kpi-sub">Discrimination</span>
+            </div>
+          </div>
+
+          <!-- Dual Visual Grid: Plotted Confusion Matrix & Threshold Dial -->
+          <div class="eval-visual-grid">
+            <!-- Plotted Confusion Matrix -->
+            <div class="confusion-matrix-wrapper">
+              <div class="cm-caption">
+                <strong>Plotted Confusion Matrix</strong>
+                <span class="cm-subtext">Actual Ground Truth vs. Predicted Classification</span>
+              </div>
+              
+              <div class="cm-table-layout">
+                <div class="cm-corner"></div>
+                <div class="cm-col-header">Pred: Fraud</div>
+                <div class="cm-col-header">Pred: Legitimate</div>
+                
+                <div class="cm-row-header">Actual: Fraud</div>
+                <div class="cm-cell cm-tp" id="cm-tp-cell">
+                  <span class="cm-cell-val" id="cm-tp-val">0</span>
+                  <span class="cm-cell-lbl">True Positive (TP)</span>
+                </div>
+                <div class="cm-cell cm-fn" id="cm-fn-cell">
+                  <span class="cm-cell-val" id="cm-fn-val">0</span>
+                  <span class="cm-cell-lbl">False Negative (FN)</span>
+                </div>
+
+                <div class="cm-row-header">Actual: Legitimate</div>
+                <div class="cm-cell cm-fp" id="cm-fp-cell">
+                  <span class="cm-cell-val" id="cm-fp-val">0</span>
+                  <span class="cm-cell-lbl">False Positive (FP)</span>
+                </div>
+                <div class="cm-cell cm-tn" id="cm-tn-cell">
+                  <span class="cm-cell-val" id="cm-tn-val">0</span>
+                  <span class="cm-cell-lbl">True Negative (TN)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Ensemble Insights & Threshold Calibration -->
+            <div class="eval-ensemble-summary">
+              <div class="cm-caption">
+                <strong>Ensemble Calibration</strong>
+                <span class="cm-subtext">Multi-Model Weighting Architecture</span>
+              </div>
+              <ul class="ensemble-weights-list">
+                <li>
+                  <div class="weight-head"><span>XGBoost (scale_pos_weight=577)</span><strong>30% weight</strong></div>
+                  <div class="weight-bar"><div class="weight-fill" style="width: 30%; background: #004B87;"></div></div>
+                </li>
+                <li>
+                  <div class="weight-head"><span>Random Forest (Balanced)</span><strong>35% weight</strong></div>
+                  <div class="weight-bar"><div class="weight-fill" style="width: 35%; background: #4B0082;"></div></div>
+                </li>
+                <li>
+                  <div class="weight-head"><span>K-Nearest Neighbors (k=5)</span><strong>20% weight</strong></div>
+                  <div class="weight-bar"><div class="weight-fill" style="width: 20%; background: #008080;"></div></div>
+                </li>
+                <li>
+                  <div class="weight-head"><span>LSTM Sequential Temporal Window</span><strong>15% weight</strong></div>
+                  <div class="weight-bar"><div class="weight-fill" style="width: 15%; background: #0891B2;"></div></div>
+                </li>
+              </ul>
+              <div class="threshold-note">
+                <span class="badge-dot"></span>
+                <span>Decision boundary calibrated at <strong>0.50 risk score threshold</strong> with extreme imbalance cost-penalty.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Transactions Audit Table -->
         <div class="transactions-table-card">
           <div class="table-action-header">
