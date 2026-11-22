@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "RECARD - Real-Time Payment Fraud Shield",
+  "version": "1.0.0",
+  "description": "Flags suspicious payments to Razorpay, Cashfree, UPI VPAs, and crypto gateways in real time using fraud reports and domain reputation.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RECARD Fraud Shield"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.razorpay.com/*",
+        "*://rzp.io/*",
+        "*://*.cashfree.com/*",
+        "*://*.payu.in/*",
+        "*://*.instamojo.com/*",
+        "*://*/*checkout*",
+        "*://*/*payment*",
+        "*://*/*pay*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

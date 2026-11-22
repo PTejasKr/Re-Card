@@ -398,10 +398,34 @@
               </ul>
               <div class="threshold-note">
                 <span class="badge-dot"></span>
-                <span>Decision boundary calibrated at <strong>0.50 risk score threshold</strong> with extreme imbalance cost-penalty.</span>
+                <span>Decision boundary calibrated at <strong>0.48 risk score threshold</strong> combining baseline tabular ML with receiver threat reports.</span>
               </div>
             </div>
           </div>
+
+          <!-- Real-Time Risk Probability Comparison Graph (Baseline vs Custom Model) -->
+          <div class="risk-prob-chart-container" style="margin-top: 1.75rem; border-top: var(--border-hairline); padding-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <strong style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink-900);">Transaction Risk Probability: Baseline ML vs. Custom Threat Engine</strong>
+                <span style="display: block; font-size: 0.75rem; color: var(--ink-500); font-family: var(--font-mono);">
+                  Comparing standard multi-model scoring against custom receiver database cross-referencing
+                </span>
+              </div>
+              <div class="chart-legend-pills" style="display: flex; gap: 0.75rem;">
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #64748B;">
+                  <span style="width: 10px; height: 10px; background: #94A3B8; border-radius: 2px;"></span> Baseline Ensemble (KNN/RF/XGB)
+                </span>
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #0284C7; font-weight: 700;">
+                  <span style="width: 10px; height: 10px; background: #0284C7; border-radius: 2px;"></span> Custom Threat Model (Db &amp; Velocity)
+                </span>
+              </div>
+            </div>
+            <div style="position: relative; height: 260px; width: 100%; background: #F8FAFC; border: var(--border-medium); padding: 0.75rem;">
+              <canvas id="riskDistChart"></canvas>
+            </div>
+          </div>
+
         </div>
 
         <!-- Transactions Audit Table -->
@@ -421,12 +445,13 @@
                 <tr>
                   <th>#</th>
                   <th>Timestamp</th>
-                  <th>Particulars / Merchant</th>
+                  <th>Counterparty Receiver / Particulars</th>
+                  <th>Threat Intelligence Record</th>
                   <th>Amount</th>
-                  <th>Balance</th>
                   <th>Model Breakdown</th>
-                  <th>Composite Risk</th>
-                  <th>Verdict</th>
+                  <th>Baseline ML</th>
+                  <th>Custom Risk Prob.</th>
+                  <th>Decision</th>
                 </tr>
               </thead>
               <tbody id="table-body">

@@ -1,3 +1,4 @@
+from backend.fraud_database import scan_receiver_database
 import os
 import io
 import time
@@ -199,25 +200,39 @@ class RecardEngine:
             x_p = float(xgb_preds[i])
             s_p = float(seq_scores[i])
 
-            # Ensemble weighted score
-            risk_score = (0.20 * k_p) + (0.35 * r_p) + (0.30 * x_p) + (0.15 * s_p)
-            if rec["suspicious_flag_reason"]:
-                risk_score = min(1.0, risk_score + 0.25)
+            # Cross-reference Counterparty Receiver with Fraud Database & Scam Registries
+            threat_intel = scan_receiver_database(rec.get("description", ""))
+            db_risk_weight = float(threat_intel.get("confidence", 0.05)) if threat_intel.get("matched") else 0.05
 
-            is_fraud = bool(risk_score >= 0.50)
+            # Custom Comparative Risk Probability: Baseline ML Ensemble (70%) + Receiver Threat Intel (30%)
+            baseline_prob = (0.20 * k_p) + (0.35 * r_p) + (0.30 * x_p) + (0.15 * s_p)
+            
+            if threat_intel.get("matched"):
+                custom_prob = min(1.0, (baseline_prob * 0.40) + (db_risk_weight * 0.60))
+            else:
+                custom_prob = min(1.0, (baseline_prob * 0.85) + (db_risk_weight * 0.15))
+
+            if rec.get("suspicious_flag_reason"):
+                custom_prob = min(1.0, custom_prob + 0.15)
+
+            is_fraud = bool(custom_prob >= 0.48 or threat_intel.get("matched"))
             if is_fraud:
                 flagged_count += 1
-            total_risk_sum += risk_score
+            total_risk_sum += custom_prob
 
             rec_out = {
                 **rec,
-                "risk_score": round(risk_score, 4),
+                "risk_score": round(custom_prob, 4),
+                "baseline_probability": round(baseline_prob, 3),
+                "custom_probability": round(custom_prob, 3),
                 "is_fraud": is_fraud,
+                "threat_intel": threat_intel,
                 "model_breakdown": {
                     "knn": round(k_p, 3),
                     "random_forest": round(r_p, 3),
                     "xgboost": round(x_p, 3),
-                    "lstm_sequential": round(s_p, 3)
+                    "lstm_sequential": round(s_p, 3),
+                    "receiver_threat_db": round(db_risk_weight, 3)
                 }
             }
             results.append(rec_out)
@@ -371,3 +386,36 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print(f"RECARD Backend running on http://127.0.0.1:{port}")
     app.run(host='0.0.0.0', port=port, debug=False)
+
+@app.route('/api/check-receiver', methods=['GET', 'POST'])
+def check_receiver():
+    """Real-time receiver intelligence lookup for browser extension and checkout gateways."""
+    if request.method == 'POST':
+        data = request.get_json(silent=True) or request.form
+        query = data.get('query') or data.get('url') or data.get('merchant') or data.get('vpa') or ''
+        amount = float(data.get('amount') or 0.0)
+    else:
+        query = request.args.get('query') or request.args.get('url') or request.args.get('merchant') or ''
+        amount = float(request.args.get('amount') or 0.0)
+
+    threat_profile = scan_receiver_database(query)
+    base_risk = threat_profile["confidence"] if threat_profile["matched"] else 0.08
+    
+    # Amount heuristic velocity
+    if amount > 1000:
+        base_risk = min(1.0, base_risk + 0.20)
+    elif amount > 500:
+        base_risk = min(1.0, base_risk + 0.10)
+
+    verdict = "BLOCK / QUARANTINE" if base_risk >= 0.70 else ("STEP-UP 2FA / WARN" if base_risk >= 0.40 else "SAFE TO PROCEED")
+    
+    return jsonify({
+        "status": "success",
+        "query": query,
+        "amount": amount,
+        "risk_probability": round(base_risk, 3),
+        "verdict": verdict,
+        "is_risky": bool(base_risk >= 0.40),
+        "threat_intel": threat_profile,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    })

@@ -1,3 +1,4 @@
+const { scanReceiverDatabase } = require('./fraud-database');
 /**
  * Netlify Function: /api/analyze-statement
  * Implements the RECARD Multi-Model Pipeline (KNN, RF, XGB, Sequence burst)
@@ -117,24 +118,40 @@ exports.handler = async (event, context) => {
       const isRepetitiveBurst = windowAmts.length >= 2 && windowAmts.filter(a => a >= 600).length >= 2;
       const lstmScore = isRepetitiveBurst || rec.amount > 1200 ? 0.86 : 0.10;
 
-      // Ensemble Weighted Score
-      let composite = (0.20 * knnScore) + (0.35 * rfScore) + (0.30 * xgbScore) + (0.15 * lstmScore);
-      if (isSuspiciousWord) composite = Math.min(1.0, composite + 0.20);
+      // Counterparty Receiver Threat Intelligence Scanning
+      const threatIntel = scanReceiverDatabase(rec.description);
+      const dbWeight = threatIntel.matched ? threatIntel.confidence : 0.05;
 
-      const isFraud = composite >= 0.48;
+      // Comparative Models: Baseline ML Ensemble (70%) vs Custom Calibrated Threat Probability (30%)
+      const baselineProb = (0.20 * knnScore) + (0.35 * rfScore) + (0.30 * xgbScore) + (0.15 * lstmScore);
+      let customProb = threatIntel.matched
+        ? Math.min(1.0, (baselineProb * 0.40) + (dbWeight * 0.60))
+        : Math.min(1.0, (baselineProb * 0.85) + (dbWeight * 0.15));
+
+      if (isSuspiciousWord) customProb = Math.min(1.0, customProb + 0.15);
+
+      const isFraud = customProb >= 0.48 || threatIntel.matched;
       if (isFraud) flaggedCount++;
-      totalRisk += composite;
+      totalRisk += customProb;
+
+      const flagReason = threatIntel.matched
+        ? `Threat DB Match: ${threatIntel.threat_type}`
+        : (isSuspiciousWord ? "High-risk category flag" : (isRepetitiveBurst ? "Repetitive burst spike" : null));
 
       return {
         ...rec,
-        risk_score: Math.round(composite * 1000) / 1000,
+        risk_score: Math.round(customProb * 1000) / 1000,
+        baseline_probability: Math.round(baselineProb * 1000) / 1000,
+        custom_probability: Math.round(customProb * 1000) / 1000,
         is_fraud: isFraud,
-        suspicious_flag_reason: isSuspiciousWord ? "High-risk category flag" : (isRepetitiveBurst ? "Repetitive burst spike" : null),
+        threat_intel: threatIntel,
+        suspicious_flag_reason: flagReason,
         model_breakdown: {
           knn: Math.round(knnScore * 100) / 100,
           random_forest: Math.round(rfScore * 100) / 100,
           xgboost: Math.round(xgbScore * 100) / 100,
-          lstm_sequential: Math.round(lstmScore * 100) / 100
+          lstm_sequential: Math.round(lstmScore * 100) / 100,
+          receiver_threat_db: Math.round(dbWeight * 100) / 100
         }
       };
     });

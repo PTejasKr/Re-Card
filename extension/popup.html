@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RECARD Shield Popup</title>
+  <style>
+    body {
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0F172A;
+      color: #F8FAFC;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #1E293B;
+      padding-bottom: 10px;
+    }
+    .logo-badge {
+      background: #0284C7;
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .brand-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .status-box {
+      background: #1E293B;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-left: 3px solid #10B981;
+    }
+    .status-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #10B981;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-desc {
+      font-size: 11px;
+      color: #94A3B8;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .input-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      color: #94A3B8;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #F8FAFC;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #0284C7;
+    }
+    button {
+      width: 100%;
+      padding: 8px;
+      background: #0284C7;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0369A1;
+    }
+    .result-pane {
+      margin-top: 12px;
+      background: #1E293B;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 11px;
+      display: none;
+    }
+    .result-risk {
+      font-size: 14px;
+      font-weight: 800;
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <span class="logo-badge">RECARD</span>
+    <span class="brand-title">Real-Time Threat Shield</span>
+  </div>
+
+  <div class="status-box">
+    <div class="status-title">
+      <span>●</span> Active Protection
+    </div>
+    <div class="status-desc">
+      Monitoring live payment links (Razorpay, Cashfree, UPI, crypto gateways) against threat databases.
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="check-target">Scan Receiver / Payment Link</label>
+    <input type="text" id="check-target" placeholder="e.g. rzp.io/l/winner_bonus or VPA">
+  </div>
+  <button id="scan-btn">Analyze Beneficiary Risk</button>
+
+  <div class="result-pane" id="result-pane">
+    <div id="res-verdict" style="font-weight: bold;"></div>
+    <div class="result-risk" id="res-risk"></div>
+    <div id="res-details" style="color: #94A3B8;"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
