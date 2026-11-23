@@ -1,43 +1,61 @@
-# RECARD — Behavioral Fraud Intelligence Website
+# RECARD — Behavioral Fraud Intelligence & Threat Analytics Platform
 
-End-to-end Machine Learning pipeline and web application for bank statement fraud detection based on `mlproj.ipynb`.
+End-to-end Machine Learning pipeline, Counterparty Threat Intelligence Database, and Web Application for bank statement fraud detection and real-time payment gateway protection.
 
 ## Features
-- **Multi-Model ML Engine**: Evaluates financial transactions using K-Nearest Neighbors (KNN), Random Forest, XGBoost Ensembling, and Sequential Behavioral Windowing (LSTM style).
-- **Soft Editorial Matte & Crayon Aesthetics**: Inspired by 21st.dev minimalist editorial layouts with paper grain textures and hand-drawn crayon accents.
-- **Real-Time Telemetry Visualizer**: Continuous live graphical ping telemetry (using Chart.js) monitoring backend health, latency in milliseconds, and status.
-- **Bank Statement Ingestion**: Drag-and-drop support for `.csv` and `.xlsx` bank statements with schema validation and sample generator.
+- **Multi-Model ML Engine**: Evaluates financial transactions using K-Nearest Neighbors (KNN), Random Forest (cost-sensitive balanced), XGBoost (`scale_pos_weight` ensembling), and Sequential Behavioral Windowing (LSTM style).
+- **Counterparty Fraud Intelligence Database**: Cross-references merchants, recipient VPAs, and URLs against phishing advisories, malicious Razorpay/Cashfree payment links, and P2P crypto laundering registers.
+- **Continuous Real-Time Risk Probability ($0\% - 100\%$)**: Moves beyond rigid binary classifications to calculate calibrated risk percentiles with comparative baseline vs. custom model visualization.
+- **Interactive Evaluation & Plotted Confusion Matrix**: Live in-browser 2x2 confusion matrix heatmap and precision-recall metric ribbons.
+- **Browser Checkout Protection Extension**: Manifest V3 extension in `extension/` that inspects live payment links (Razorpay, Cashfree, crypto gateways) and injects instant warning banners before entering UPI PINs or card details.
+- **Terminal CLI Interface**: Standalone terminal CLI in `cli.py` for headless bank statement audits and receiver lookups.
 
 ## Project Structure
 ```
 ml proj/
+├── cli.py                      # Interactive Terminal CLI tool for auditing & scanning
 ├── backend/
-│   └── app.py                  # Python Flask server & RECARD ML engine
+│   ├── app.py                  # Flask server & RECARD ML engine
+│   └── fraud_database.py       # Counterparty Threat Database & regex scanner
+├── extension/                  # Chrome / Edge Browser Checkout Shield Extension
+│   ├── manifest.json
+│   ├── content.js              # Payment page interceptor & warning banner
+│   ├── popup.html & popup.js   # Manual receiver risk scanner
+│   └── README.md
 ├── templates/
-│   └── index.html              # Modernistic Soft Editorial UI
+│   └── index.html              # Modernistic Editorial UI
 ├── static/
-│   ├── style.css               # Crayon paper grain styling & components
-│   └── app.js                  # Real-time ping chart & async file processor
+│   ├── style.css               # Styling & visual components
+│   └── app.js                  # Real-time ping chart, comparative bar chart & audit engine
+├── netlify/
+│   └── functions/              # Zero-dependency serverless backend functions
 ├── sample_statements/
 │   └── statement_sample.csv    # Ready-to-test bank statement sample
 ├── Dockerfile                  # Container deployment specification
-├── Procfile                    # Cloud platform entrypoint (Heroku, Render, Railway)
+├── Procfile                    # Cloud platform entrypoint
 └── requirements.txt            # Python dependencies
 ```
 
-## Running Locally
+## Running the Terminal CLI File
 
-1. Install dependencies:
+You can execute the terminal tool directly from the parent folder:
+
+1. **Interactive Menu Mode**:
    ```bash
-   pip install -r requirements.txt
+   python cli.py
    ```
 
-2. Start the server:
+2. **Audit a Statement File via CLI**:
    ```bash
-   python backend/app.py
+   python cli.py --audit sample_statements/statement_sample.csv
    ```
 
-3. Open in your browser:
+3. **Check a Counterparty / Razorpay Link via CLI**:
+   ```bash
+   python cli.py --check "rzp.io/l/winner_prize_claim" --amount 1200
    ```
-   http://127.0.0.1:5000
+
+4. **Launch the Flask Web Server via CLI**:
+   ```bash
+   python cli.py --server
    ```
