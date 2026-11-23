@@ -403,25 +403,34 @@
             </div>
           </div>
 
-          <!-- Real-Time Risk Probability Comparison Graph (Baseline vs Custom Model) -->
+          <!-- Multi-Model Deviation & Risk Probability Comparison Line Chart -->
           <div class="risk-prob-chart-container" style="margin-top: 1.75rem; border-top: var(--border-hairline); padding-top: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
               <div>
-                <strong style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink-900);">Transaction Risk Probability: Baseline ML vs. Custom Threat Engine</strong>
+                <strong style="font-family: var(--font-serif); font-size: 1.15rem; color: var(--ink-900);">Multi-Model Prediction &amp; Deviation Profile Across Transactions</strong>
                 <span style="display: block; font-size: 0.75rem; color: var(--ink-500); font-family: var(--font-mono);">
-                  Comparing standard multi-model scoring against custom receiver database cross-referencing
+                  Single continuous graph tracking model predictions (KNN, Random Forest, XGBoost, LSTM) alongside Custom Risk Probability
                 </span>
               </div>
-              <div class="chart-legend-pills" style="display: flex; gap: 0.75rem;">
-                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #64748B;">
-                  <span style="width: 10px; height: 10px; background: #94A3B8; border-radius: 2px;"></span> Baseline Ensemble (KNN/RF/XGB)
+              <div class="chart-legend-pills" style="display: flex; flex-wrap: wrap; gap: 0.75rem;">
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #008080;">
+                  <span style="width: 10px; height: 10px; background: #008080; border-radius: 2px;"></span> KNN
                 </span>
-                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #0284C7; font-weight: 700;">
-                  <span style="width: 10px; height: 10px; background: #0284C7; border-radius: 2px;"></span> Custom Threat Model (Db &amp; Velocity)
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #4B0082;">
+                  <span style="width: 10px; height: 10px; background: #4B0082; border-radius: 2px;"></span> Random Forest
+                </span>
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #004B87;">
+                  <span style="width: 10px; height: 10px; background: #004B87; border-radius: 2px;"></span> XGBoost
+                </span>
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #0891B2;">
+                  <span style="width: 10px; height: 10px; background: #0891B2; border-radius: 2px;"></span> LSTM Sequence
+                </span>
+                <span class="pill-legend" style="display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.72rem; color: #DC2626; font-weight: 700;">
+                  <span style="width: 10px; height: 10px; background: #DC2626; border-radius: 2px;"></span> Custom Threat Model
                 </span>
               </div>
             </div>
-            <div style="position: relative; height: 260px; width: 100%; background: #F8FAFC; border: var(--border-medium); padding: 0.75rem;">
+            <div style="position: relative; height: 300px; width: 100%; background: #F8FAFC; border: var(--border-medium); padding: 0.75rem;">
               <canvas id="riskDistChart"></canvas>
             </div>
           </div>

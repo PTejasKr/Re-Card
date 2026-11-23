@@ -588,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-  // Global Risk Probability Comparison Chart Instance
+  // Global Multi-Model Deviation & Risk Line Chart Instance
   let riskDistChartInstance = null;
 
   function renderRiskProbabilityChart(transactions) {
@@ -597,7 +597,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const ctx = canvas.getContext('2d');
     const txLabels = transactions.map((t, i) => `Tx #${t.id || (i + 1)}`);
-    const baselineData = transactions.map(t => (t.baseline_probability !== undefined ? (t.baseline_probability * 100) : (t.risk_score * 85)));
+
+    // Extract individual model predictions from mlproj.ipynb architectures
+    const knnData = transactions.map(t => (t.model_breakdown && t.model_breakdown.knn !== undefined ? t.model_breakdown.knn * 100 : 8));
+    const rfData = transactions.map(t => (t.model_breakdown && t.model_breakdown.random_forest !== undefined ? t.model_breakdown.random_forest * 100 : 10));
+    const xgbData = transactions.map(t => (t.model_breakdown && t.model_breakdown.xgboost !== undefined ? t.model_breakdown.xgboost * 100 : 10));
+    const lstmData = transactions.map(t => (t.model_breakdown && t.model_breakdown.lstm_sequential !== undefined ? t.model_breakdown.lstm_sequential * 100 : 10));
     const customData = transactions.map(t => (t.custom_probability !== undefined ? (t.custom_probability * 100) : (t.risk_score * 100)));
 
     if (riskDistChartInstance) {
@@ -605,31 +610,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     riskDistChartInstance = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: txLabels,
         datasets: [
           {
-            label: 'Baseline Model Risk % (KNN/RF/XGB)',
-            data: baselineData,
-            backgroundColor: 'rgba(148, 163, 184, 0.45)',
-            borderColor: '#64748B',
-            borderWidth: 1.5,
-            borderRadius: 4
+            label: 'KNN (Distance Centroid)',
+            data: knnData,
+            borderColor: '#008080',
+            backgroundColor: 'transparent',
+            borderWidth: 1.8,
+            borderDash: [4, 4],
+            pointRadius: 3,
+            tension: 0.25
           },
           {
-            label: 'Custom Model Risk % (Threat DB + Velocity)',
-            data: customData,
-            backgroundColor: customData.map(v => v >= 48 ? 'rgba(2, 132, 199, 0.85)' : 'rgba(16, 185, 129, 0.65)'),
-            borderColor: customData.map(v => v >= 48 ? '#0284C7' : '#059669'),
+            label: 'Random Forest (Class-Weighted)',
+            data: rfData,
+            borderColor: '#4B0082',
+            backgroundColor: 'transparent',
+            borderWidth: 1.8,
+            borderDash: [2, 2],
+            pointRadius: 3,
+            tension: 0.25
+          },
+          {
+            label: 'XGBoost (scale_pos_weight)',
+            data: xgbData,
+            borderColor: '#004B87',
+            backgroundColor: 'transparent',
             borderWidth: 2,
-            borderRadius: 4
+            pointRadius: 3,
+            tension: 0.25
+          },
+          {
+            label: 'LSTM (Sequential Velocity)',
+            data: lstmData,
+            borderColor: '#0891B2',
+            backgroundColor: 'transparent',
+            borderWidth: 1.8,
+            pointRadius: 3,
+            tension: 0.25
+          },
+          {
+            label: 'Custom Threat Model (Composite + Receiver DB)',
+            data: customData,
+            borderColor: '#DC2626',
+            backgroundColor: 'rgba(220, 38, 38, 0.08)',
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: '#DC2626',
+            pointBorderColor: '#FFFFFF',
+            pointBorderWidth: 2,
+            fill: true,
+            tension: 0.3
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
         plugins: {
           legend: {
             display: false
@@ -637,7 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
           tooltip: {
             callbacks: {
               label: function(context) {
-                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}% probability`;
+                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`;
               }
             }
           }
@@ -654,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           x: {
             ticks: { font: { family: 'ui-monospace, monospace', size: 10 } },
-            grid: { display: false }
+            grid: { color: 'rgba(0,0,0,0.03)' }
           }
         }
       }
